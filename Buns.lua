@@ -1,4 +1,4 @@
-local Icons = loadstring(game:HttpGet("https://github.com/ArchIsDead/Arch-Vault/lucide-icons.lua?raw=true"))()
+local Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/ArchIsDead/Arch-Vault/refs/heads/main/lucide-icons.lua"))()
 
 local Library = {
     Flags = {},
