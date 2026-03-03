@@ -51,16 +51,20 @@ Library:SetTheme("dark")
 
 function Library:CreateIcon(name, size)
     if not self.Icons or not name then
-        return Create("Frame", {
+        return Create("ImageLabel", {
             Size = UDim2.new(0, size or 20, 0, size or 20),
-            BackgroundTransparency = 1
+            BackgroundTransparency = 1,
+            Image = "rbxassetid://0",
+            Visible = false
         })
     end
     local id = self.Icons[name]
     if not id then
-        return Create("Frame", {
+        return Create("ImageLabel", {
             Size = UDim2.new(0, size or 20, 0, size or 20),
-            BackgroundTransparency = 1
+            BackgroundTransparency = 1,
+            Image = "rbxassetid://0",
+            Visible = false
         })
     end
     return Create("ImageLabel", {
