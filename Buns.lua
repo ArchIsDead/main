@@ -1,4 +1,7 @@
 local Icons = loadstring(game:HttpGet("https://raw.githubusercontent.com/ArchIsDead/Arch-Vault/refs/heads/main/lucide-icons.lua"))()
+if not Icons or type(Icons) ~= "table" then
+    Icons = {}
+end
 
 local Library = {
     Flags = {},
@@ -27,13 +30,14 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local HttpService = game:GetService("HttpService")
 
 local function Create(class, props)
     local obj = Instance.new(class)
-    for k, v in pairs(props) do
-        if k ~= "Parent" then
-            obj[k] = v
+    if props and type(props) == "table" then
+        for k, v in pairs(props) do
+            if k ~= "Parent" then
+                obj[k] = v
+            end
         end
     end
     return obj
@@ -46,20 +50,31 @@ end
 Library:SetTheme("dark")
 
 function Library:CreateIcon(name, size)
+    if not self.Icons or not name then
+        return Create("Frame", {
+            Size = UDim2.new(0, size or 20, 0, size or 20),
+            BackgroundTransparency = 1
+        })
+    end
     local id = self.Icons[name]
-    if not id then return Create("Frame") end
+    if not id then
+        return Create("Frame", {
+            Size = UDim2.new(0, size or 20, 0, size or 20),
+            BackgroundTransparency = 1
+        })
+    end
     return Create("ImageLabel", {
         Size = UDim2.new(0, size or 20, 0, size or 20),
         BackgroundTransparency = 1,
         Image = id,
         ImageColor3 = self.Theme.text,
-        ScaleType = "Fit"
+        ScaleType = Enum.ScaleType.Fit
     })
 end
 
 function Library:CreateLoader()
     local Loader = {}
-    local ScreenGui = Create("ScreenGui", {Name = "LibraryLoader", ResetOnSpawn = false, ZIndexBehavior = "Sibling"})
+    local ScreenGui = Create("ScreenGui", {Name = "LibraryLoader", ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling})
     local Frame = Create("Frame", {
         Size = UDim2.new(1, 0, 1, 0),
         BackgroundColor3 = self.Theme.bg,
@@ -94,7 +109,7 @@ function Library:CreateLoader()
         Text = "Loading...",
         TextColor3 = self.Theme.text2,
         TextSize = 18,
-        Font = "GothamBold",
+        Font = Enum.Font.GothamBold,
         Parent = Frame
     })
     local ProgressBar = Create("Frame", {
@@ -140,7 +155,7 @@ end
 function Library:CreateWindow(opts)
     opts = opts or {}
     local Window = {Tabs = {}, Elements = {}, Dragging = {isDragging = false}}
-    Window.ScreenGui = Create("ScreenGui", {Name = "LibraryWindow", ResetOnSpawn = false, ZIndexBehavior = "Sibling"})
+    Window.ScreenGui = Create("ScreenGui", {Name = "LibraryWindow", ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling})
     Window.Main = Create("Frame", {
         Size = opts.Size or UDim2.new(0, 600, 0, 400),
         Position = opts.Position or UDim2.new(0.5, -300, 0.5, -200),
@@ -181,8 +196,8 @@ function Library:CreateWindow(opts)
         Text = opts.Title or "Library",
         TextColor3 = Library.Theme.text,
         TextSize = 16,
-        Font = "GothamBold",
-        TextXAlignment = "Left",
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
         Parent = Window.TopBar
     })
     Window.Subtitle = Create("TextLabel", {
@@ -192,8 +207,8 @@ function Library:CreateWindow(opts)
         Text = opts.SubTitle or "",
         TextColor3 = Library.Theme.text2,
         TextSize = 11,
-        Font = "Gotham",
-        TextXAlignment = "Left",
+        Font = Enum.Font.Gotham,
+        TextXAlignment = Enum.TextXAlignment.Left,
         Parent = Window.TopBar
     })
     Window.Version = Create("TextLabel", {
@@ -203,7 +218,7 @@ function Library:CreateWindow(opts)
         Text = opts.Version or "v1.0",
         TextColor3 = Library.Theme.text2,
         TextSize = 12,
-        Font = "Gotham",
+        Font = Enum.Font.Gotham,
         Parent = Window.TopBar
     })
     Window.Icon = Library:CreateIcon(opts.Icon or "a-large-small", 20)
@@ -311,8 +326,8 @@ function Library:CreateWindow(opts)
             Text = name,
             TextColor3 = Library.Theme.text2,
             TextSize = 13,
-            Font = "Gotham",
-            TextXAlignment = "Left",
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Tab.Button
         })
         Tab.Page = Create("ScrollingFrame", {
@@ -356,8 +371,8 @@ function Library:CreateWindow(opts)
             Text = name,
             TextColor3 = Library.Theme.text,
             TextSize = 14,
-            Font = "GothamBold",
-            TextXAlignment = "Left",
+            Font = Enum.Font.GothamBold,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Section.Container
         })
         local Divider = Create("Frame", {
@@ -407,8 +422,8 @@ function Library:CreateWindow(opts)
             Text = opts.text or "Button",
             TextColor3 = Library.Theme.text,
             TextSize = 13,
-            Font = "Gotham",
-            TextXAlignment = "Left",
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Button.Container
         })
         Button.Container.MouseEnter:Connect(function()
@@ -469,8 +484,8 @@ function Library:CreateWindow(opts)
             Text = opts.text or "Toggle",
             TextColor3 = Library.Theme.text,
             TextSize = 13,
-            Font = "Gotham",
-            TextXAlignment = "Left",
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Toggle.Container
         })
         local Desc = Create("TextLabel", {
@@ -480,8 +495,8 @@ function Library:CreateWindow(opts)
             Text = opts.desc or "",
             TextColor3 = Library.Theme.text2,
             TextSize = 11,
-            Font = "Gotham",
-            TextXAlignment = "Left",
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Toggle.Container,
             Visible = opts.desc and true or false
         })
@@ -529,8 +544,8 @@ function Library:CreateWindow(opts)
             Text = opts.text or "Slider",
             TextColor3 = Library.Theme.text,
             TextSize = 13,
-            Font = "Gotham",
-            TextXAlignment = "Left",
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Slider.Container
         })
         local ValueText = Create("TextLabel", {
@@ -540,7 +555,7 @@ function Library:CreateWindow(opts)
             Text = tostring(Slider.Value),
             TextColor3 = Library.Theme.accent,
             TextSize = 13,
-            Font = "GothamBold",
+            Font = Enum.Font.GothamBold,
             Parent = Slider.Container
         })
         local SliderBg = Create("Frame", {
@@ -618,8 +633,8 @@ function Library:CreateWindow(opts)
             Text = opts.text or "Dropdown",
             TextColor3 = Library.Theme.text,
             TextSize = 13,
-            Font = "Gotham",
-            TextXAlignment = "Left",
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Dropdown.Container
         })
         local SelectBtn = Create("TextButton", {
@@ -640,8 +655,8 @@ function Library:CreateWindow(opts)
             Text = Dropdown.Selected or "Select",
             TextColor3 = Library.Theme.text,
             TextSize = 12,
-            Font = "Gotham",
-            TextXAlignment = "Left",
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = SelectBtn
         })
         local ArrowIcon = Library:CreateIcon("chevron-down", 12)
@@ -680,8 +695,8 @@ function Library:CreateWindow(opts)
                 Text = opt,
                 TextColor3 = Library.Theme.text2,
                 TextSize = 12,
-                Font = "Gotham",
-                TextXAlignment = "Left",
+                Font = Enum.Font.Gotham,
+                TextXAlignment = Enum.TextXAlignment.Left,
                 Parent = OptBtn,
                 ZIndex = 11
             })
@@ -729,8 +744,8 @@ function Library:CreateWindow(opts)
                     Text = opt,
                     TextColor3 = Library.Theme.text2,
                     TextSize = 12,
-                    Font = "Gotham",
-                    TextXAlignment = "Left",
+                    Font = Enum.Font.Gotham,
+                    TextXAlignment = Enum.TextXAlignment.Left,
                     Parent = OptBtn,
                     ZIndex = 11
                 })
@@ -773,8 +788,8 @@ function Library:CreateWindow(opts)
             Text = opts.text or "Input",
             TextColor3 = Library.Theme.text,
             TextSize = 13,
-            Font = "Gotham",
-            TextXAlignment = "Left",
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Input.Container
         })
         local InputBox = Create("TextBox", {
@@ -786,7 +801,7 @@ function Library:CreateWindow(opts)
             Text = Input.Value,
             TextColor3 = Library.Theme.text,
             TextSize = 13,
-            Font = "Gotham",
+            Font = Enum.Font.Gotham,
             PlaceholderText = opts.placeholder or "Enter...",
             PlaceholderColor3 = Library.Theme.text3,
             ClearTextOnFocus = false,
@@ -830,8 +845,8 @@ function Library:CreateWindow(opts)
             Text = opts.text or "Paragraph",
             TextColor3 = Library.Theme.text,
             TextSize = 13,
-            Font = "GothamBold",
-            TextXAlignment = "Left",
+            Font = Enum.Font.GothamBold,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Paragraph
         })
         local ParaDesc = Create("TextLabel", {
@@ -841,8 +856,8 @@ function Library:CreateWindow(opts)
             Text = opts.desc or "",
             TextColor3 = Library.Theme.text2,
             TextSize = 11,
-            Font = "Gotham",
-            TextXAlignment = "Left",
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
             TextWrapped = true,
             Parent = Paragraph
         })
@@ -897,8 +912,8 @@ function Library:CreateWindow(opts)
             Text = opts.title or "Notification",
             TextColor3 = Library.Theme.text,
             TextSize = 14,
-            Font = "GothamBold",
-            TextXAlignment = "Left",
+            Font = Enum.Font.GothamBold,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Notif
         })
         local NotifDesc = Create("TextLabel", {
@@ -908,7 +923,7 @@ function Library:CreateWindow(opts)
             Text = opts.desc or "",
             TextColor3 = Library.Theme.text2,
             TextSize = 12,
-            Font = "Gotham",
+            Font = Enum.Font.Gotham,
             TextWrapped = true,
             Parent = Notif
         })
@@ -929,7 +944,7 @@ function Library:CreateWindow(opts)
             Text = "OK",
             TextColor3 = Library.Theme.text,
             TextSize = 13,
-            Font = "GothamBold",
+            Font = Enum.Font.GothamBold,
             Parent = NotifBtn
         })
         Notif.Size = UDim2.new(0, 300, 0, 120)
@@ -964,8 +979,8 @@ function Library:CreateWindow(opts)
             Text = opts.title or "Dialog",
             TextColor3 = Library.Theme.text,
             TextSize = 16,
-            Font = "GothamBold",
-            TextXAlignment = "Left",
+            Font = Enum.Font.GothamBold,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Dialog,
             ZIndex = 102
         })
@@ -976,7 +991,7 @@ function Library:CreateWindow(opts)
             Text = opts.desc or "",
             TextColor3 = Library.Theme.text2,
             TextSize = 13,
-            Font = "Gotham",
+            Font = Enum.Font.Gotham,
             TextWrapped = true,
             Parent = Dialog,
             ZIndex = 102
@@ -1001,7 +1016,7 @@ function Library:CreateWindow(opts)
                 Text = btn.text or "Button",
                 TextColor3 = Library.Theme.text,
                 TextSize = 13,
-                Font = "GothamBold",
+                Font = Enum.Font.GothamBold,
                 Parent = Button,
                 ZIndex = 103
             })
@@ -1035,8 +1050,8 @@ function Library:CreateWindow(opts)
             Text = opts.text or "Color",
             TextColor3 = Library.Theme.text,
             TextSize = 13,
-            Font = "Gotham",
-            TextXAlignment = "Left",
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = ColorPicker.Container
         })
         local ColorPreview = Create("Frame", {
@@ -1133,8 +1148,8 @@ function Library:CreateWindow(opts)
             Text = opts.text or "Keybind",
             TextColor3 = Library.Theme.text,
             TextSize = 13,
-            Font = "Gotham",
-            TextXAlignment = "Left",
+            Font = Enum.Font.Gotham,
+            TextXAlignment = Enum.TextXAlignment.Left,
             Parent = Keybind.Container
         })
         local KeyBtn = Create("TextButton", {
@@ -1146,7 +1161,7 @@ function Library:CreateWindow(opts)
             Text = Keybind.Value.Name,
             TextColor3 = Library.Theme.text,
             TextSize = 11,
-            Font = "GothamBold",
+            Font = Enum.Font.GothamBold,
             Parent = Keybind.Container
         })
         Create("UICorner", {CornerRadius = UDim.new(0, 6), Parent = KeyBtn})
