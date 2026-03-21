@@ -1,0 +1,6 @@
+-- ts file was generated at discord.gg/25ms
+
+local fenv = getfenv()
+local _ = fenv.load
+
+error("internal 419: invalid argument #1 to 'info' (function or level expected)")
